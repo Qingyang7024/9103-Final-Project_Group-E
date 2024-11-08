@@ -1,192 +1,41 @@
 # 9103-Final-Project_Group-E—_Qingyang Wang
-## **Instruction about Interaction**
+
+This project is an interactive animation adapted from **Claude Monet’s *Impression, Sunrise***, where users can create ripple effects on a simulated water surface by clicking on various parts of the canvas. 
+
+## **Interaction Instructions**
+
+  1.  Waves continuously roll on the water surface, to simulate real water undulations for a more vivid display.
+  2. Click anywhere on the canvas above the waterline to drop a stone. Stones will fall into the water and create ripples when they reach the surface.
+	3. Click directly on or below the waterline to immediately generate a ripple at the clicked location.
+	4. The ripples gradually fade as they expand, which looks like real ripple effects.
 
 ## **Details of my code**
-### *THe building and Reflection in the water*
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Monet Style Painting</title>
-</head>
+### **Animation Driver: User Input**
 
-<body>
-  <canvas id="monetCanvas" width="800" height="600"></canvas>
+My animation is driven by **mouse clicks**, making each animation session unique based on user input. This approach allows viewers to engage directly with the artwork, mimicking the motion and fluidity of water through their actions.
 
-  <script>
-    const canvas = document.getElementById("monetCanvas");
-    const ctx = canvas.getContext("2d");
+### **Animated Properties**
 
-    //the buildings
-    ctx.fillStyle = "rgba(44, 27, 50, 0.8)"; 
-    ctx.beginPath();
-    ctx.moveTo(0, 300);
-    ctx.lineTo(50, 240);
-    ctx.lineTo(100, 240);
-    ctx.lineTo(100, 150);
-    ctx.lineTo(110, 150);
-    ctx.lineTo(120, 40);
-    ctx.lineTo(130, 150);
-    ctx.lineTo(140, 150);
-    ctx.lineTo(140, 200);
-    ctx.lineTo(170, 200); 
-    ctx.arc(170, 200, 30, 0, Math.PI, true);
-    ctx.lineTo(200, 200);
-    ctx.lineTo(260, 210);
-    ctx.lineTo(300, 220);
-    ctx.lineTo(330, 250);
-    ctx.lineTo(330, 270);
-    ctx.lineTo(330, 270);
-    ctx.lineTo(450, 270);
-    ctx.lineTo(480, 300);
-    ctx.closePath();
-    ctx.fill();
+- **Ripples**: Each ripple effect grows and fades after a stone falls into the water or when the user clicks below the waterline.
+- **Stones**: Stones animate as they fall from the point of the click to the water surface, adding a realistic touch.
 
-    //Reflection
-    ctx.fillStyle = "rgba(44, 27, 50, 0.8)";
-    ctx.fillRect(100, 300, 50, 280);
+## **Inspiration**
 
-    // Water ripple effect
-     ctx.strokeStyle = 'rgba(255, 255, 255, )';  
-      ctx.lineWidth = 0.6;   
-        for (let j = canvas.height * 0.5; j < canvas.height; j +=5) {
-          ctx.beginPath();
-          ctx.moveTo(0, j);
-            for (let i = 0; i < canvas.width; i+=2) {
-              const wave = Math.sin(i / 15 + j / 25) * 2.5;
-             ctx.lineTo(i, j + wave);
-            }
+The ripple and wave effects were inspired by various interactive water simulations and Monet’s focus on the transience of light and motion. Examples of digital water ripple animations helped shape my approach to rendering the interactive water surface in this project.
 
-          ctx.stroke();
-      }
+## **Technical Explanation**
 
-    //texture
-    function addBrushStrokes(color, alpha, density) {
-      ctx.fillStyle = color;
-      ctx.globalAlpha = alpha;
-      for (let i = 0; i < density; i++) {
-        let x = Math.random() * canvas.width;
-        let y = Math.random() * canvas.height;
-        let width = Math.random() * 6 + 1;
-        let height = Math.random() * 3 + 1;
-        ctx.fillRect(x, y, width, height);
-      }
-      ctx.globalAlpha = 4.0;
-    }
-  </script>
-</body>
-</html>
+### *Animation Logic*
 
-### *The Interaction Effect of User Input* ###
-let ripples = [];
-let stones = [];
-let waterLevel = 308;
-let waveHeight = 20;
-let waveLength = 0.005;
-let time = 0;
-let rippleEffectRadius = 0; 
+- **Event-based Interactivity**: mousePressed() events trigger either a falling stone or a direct ripple, depending on the click position relative to the water level.
+- **Ripple Expansion**: Ripples grow and fade by adjusting size and opacity over time, creating a dynamic effect.
+- **Stone Fall Simulation**: Stones are created at the mouse click position and fall until they hit the water surface, at which point they generate a ripple.
 
+***The ripple and stone effects are managed through custom classes (Ripple and Stone), optimizing the simulation for performance and reusability.***
 
-function setup() {
-  let canvas = createCanvas(850, 600);
-  canvas.position(0, 0); 
-  canvas.style("pointer-events", "none"); 
-}
+## **Changes to Group Code**
 
-function draw() {
-  clear(); 
-
-  drawWaves();
-
-  for (let i = stones.length - 1; i >= 0; i--) {
-    stones[i].fall();
-    stones[i].display();
-
-    if (stones[i].y >= waterLevel + 100) {
-      ripples.push(new Ripple(stones[i].x, waterLevel + 100)); // 在水面位置生成波纹
-      stones.splice(i, 1); // 移除已到达水面的石头
-    }
-  }
-
-  for (let i = ripples.length - 1; i >= 0; i--) {
-    ripples[i].expand();
-    ripples[i].display();
-
-    if (ripples[i].opacity <= 0) {
-      ripples.splice(i, 1);
-    }
-  }
-
-  stroke(0);
-  line(0, waterLevel, width, waterLevel); 
-
-  time += 0.01;
-}
-
-function mousePressed() {
-  if (mouseY < waterLevel) {
-    // 点击在水面以上位置，生成石头
-    stones.push(new Stone(mouseX, 0)); 
-  } else {
-    ripples.push(new Ripple(mouseX, mouseY));
-  }
-}
-
-function drawWaves() {
-  noFill();
-
-  for (let i = 0; i < 10; i++) { 
-    stroke(255, 255, 255, 50 - i * 10); 
-    strokeWeight(5);
-
-    beginShape();
-    for (let x = 0; x <= width; x += 20) {
-      let y = waterLevel + i * 50 + noise(x * waveLength, time + i * 0.1) * waveHeight;
-      curveVertex(x, y); 
-    }
-    endShape();
-  }
-}
-
-
-class Ripple {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-    this.size = 10;
-    this.opacity = 150;
-  }
-
-  expand() {
-    this.size += 2; 
-    this.opacity -= 2; 
-  }
-
-  display() {
-    noFill();
-    stroke(255, 255, 255, this.opacity);
-    strokeWeight(2);
-    ellipse(this.x, this.y, this.size);
-  }
-}
-
-class Stone {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-    this.size = 20;
-    this.speed = 5; 
-  }
-
-  fall() {
-    this.y += this.speed;
-  }
-
-  display() {
-    fill(100);
-    noStroke();
-    ellipse(this.x, this.y, this.size); 
-  }
-}
+1. Adding an oscillating curve effect to simulate wave motion on the water surface.
+2. Adding custom event handling for interactive input.
+3. Implementing ripple and stone behaviors that dynamically respond to user actions.

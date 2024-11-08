@@ -26,7 +26,7 @@ The ripple and wave effects were inspired by various interactive water simulatio
 
 ## **Technical Explanation**
 
-### *Animation Logic*
+***Animation Logic***
 
 - **Event-based Interactivity**: mousePressed() events trigger either a falling stone or a direct ripple, depending on the click position relative to the water level.
 - **Ripple Expansion**: Ripples grow and fade by adjusting size and opacity over time, creating a dynamic effect.

@@ -6,8 +6,8 @@ This project is an interactive animation adapted from **Claude Monet’s *Impres
 
   1.  Waves continuously roll on the water surface, to simulate real water undulations for a more vivid display.
   2. Click anywhere on the canvas above the waterline to drop a stone. Stones will fall into the water and create ripples when they reach the surface.
-	3. Click directly on or below the waterline to immediately generate a ripple at the clicked location.
-	4. The ripples gradually fade as they expand, which looks like real ripple effects.
+  3. Click directly on or below the waterline to immediately generate a ripple at the clicked location.
+  4. The ripples gradually fade as they expand, which looks like real ripple effects.
 
 ## **Details of my code**
 

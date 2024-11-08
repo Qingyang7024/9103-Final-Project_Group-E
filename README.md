@@ -1,4 +1,4 @@
-# 9103-Final-Project_Group-E—_Qingyang Wang
+# 9103-Final-Project_Group-E_Qingyang Wang
 
 This project is an interactive animation adapted from **Claude Monet’s *Impression, Sunrise***, where users can create ripple effects on a simulated water surface by clicking on various parts of the canvas. 
 
